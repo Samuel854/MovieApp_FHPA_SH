@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
@@ -36,8 +37,8 @@ fun MovieRow(movie: Movie = getMovies()[0], onItemClick : (String) -> Unit = {})
         modifier = Modifier
             .padding(6.dp)
             .fillMaxWidth()
-            //.height(130.dp)
-            .animateContentSize()//Changes Card size with added Text.
+            //.fillMaxHeight()
+            //.animateContentSize() //Changes Card size with added Text.
             .clickable { onItemClick(movie.id) },
         elevation = 6.dp
     ) {
@@ -62,11 +63,19 @@ fun MovieRow(movie: Movie = getMovies()[0], onItemClick : (String) -> Unit = {})
                 )
             }
             Column {
+                Row() {
+
+                }
                 Text(text = "")
                 Text(text = movie.title, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                 Text(text = "Director: ${movie.director}")
                 Text(text = "Year: ${movie.year}")
+                //IconButton(onClick = { /*TODO*/ }) {
+                   // Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "My Favorite Movie!")
+               // }
+
                 var visible by remember { mutableStateOf(false) }
+
                 AnimatedVisibility(visible = visible) {
 
                     Column {
