@@ -6,19 +6,18 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,11 +26,22 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.movieapplication.Movie
 import com.example.movieapplication.getMovies
+import com.example.movieapplication.ui.theme.Turquoise
 
 @OptIn(ExperimentalAnimationApi::class)
-@Preview
 @Composable
-fun MovieRow(movie: Movie = getMovies()[0], onItemClick : (String) -> Unit = {}) { //Über Refactor.
+fun MovieRow(
+    movie: Movie = getMovies()[0],
+    showFavoriteIcon : Boolean,
+    content : @Composable () -> Unit = {},
+    onItemClick : (String) -> Unit = {},
+
+) {
+    var showHiddenInfo by remember {
+        mutableStateOf(false)
+    }
+
+
     Card(
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         modifier = Modifier
@@ -62,21 +72,18 @@ fun MovieRow(movie: Movie = getMovies()[0], onItemClick : (String) -> Unit = {})
 
                 )
             }
-            Column {
-                Row() {
+            Column(modifier = Modifier.padding(16.dp)) {
 
-                }
                 Text(text = "")
                 Text(text = movie.title, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                 Text(text = "Director: ${movie.director}")
                 Text(text = "Year: ${movie.year}")
-                //IconButton(onClick = { /*TODO*/ }) {
-                   // Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "My Favorite Movie!")
-               // }
+
 
                 var visible by remember { mutableStateOf(false) }
 
                 AnimatedVisibility(visible = visible) {
+
 
                     Column {
                         Text(text = "")
@@ -96,8 +103,16 @@ fun MovieRow(movie: Movie = getMovies()[0], onItemClick : (String) -> Unit = {})
                         Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = "Favorites")
                     }
                 }
+
             }
+            AnimatedVisibility(
+                visible = showFavoriteIcon
+            ) {
+                content()
+            }
+
         }
+
     }
 }
 
@@ -121,5 +136,21 @@ fun ImageGallery(movie: Movie = getMovies()[0]){
 
     }
 
-
+}
+@Composable
+fun FavoriteIcon(
+    movie: Movie,
+    isFavorite: Boolean,
+    onFavIconClick: (Movie) -> Unit = {}
+) {
+    Icon(
+        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+        contentDescription = "Add to Favorites",
+        modifier = Modifier
+            .padding(end = 25.dp)
+            .clickable {
+                onFavIconClick(movie)
+            },
+        tint = Turquoise
+    )
 }

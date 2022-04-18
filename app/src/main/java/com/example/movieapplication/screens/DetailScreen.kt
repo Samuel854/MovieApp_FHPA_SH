@@ -16,75 +16,69 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapplication.KotlinClass.FavoritesViewModel
 import com.example.movieapplication.Movie
+import com.example.movieapplication.getMovieById
 import com.example.movieapplication.getMovies
 import com.example.movieapplication.ui.theme.MovieApplicationTheme
+import com.example.movieapplication.widgets.FavoriteIcon
 import com.example.movieapplication.widgets.ImageGallery
 import com.example.movieapplication.widgets.MovieRow
 
-@Preview
+
 @Composable
-fun DetailScreen(
-    navController: NavController = rememberNavController(),
-    movieId: String? = "tt0944947"
-    ){
+fun MainContent(
+    movie : Movie, favViewModel : FavoritesViewModel  ){
 
-    val movie = filterMovie(movieId = movieId)
-
-    MainContent(movie.title, navController = navController) {
-        
         Surface(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()) {
             Column {
-                MovieRow(movie = movie)
-
+                MovieRow(
+                    movie = movie,
+                    showFavoriteIcon = true,
+                    content = {
+                        FavoriteIcon(movie = movie, isFavorite = favViewModel.isFavorite(movie = movie)) {
+                                movie ->
+                            if ( ! favViewModel.addMovieToFavorites( movie = movie ) ) favViewModel.removeMovie( movie = movie )
+                        }
+                    }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Divider()
 
                 ImageGallery(movie = movie)
 
 
             }
-            
+
         }
 
         //Text(text = "${movie.title}",fontSize = 20.sp, style = MaterialTheme.typography.h5)
         //Text(text = "My DetailScreen! $movieId")
     }
-}
+
 
 @Composable
-fun MainContent(movieTitle :String, navController: NavController = rememberNavController(), content: @Composable () -> Unit){
-
-    Scaffold(
-        topBar =
-        { TopAppBar(elevation = 3.dp) {
-            Row() {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Arrow back.",
+fun DetailScreen(navController: NavController = rememberNavController(), favViewModel : FavoritesViewModel, movieId : String? = getMovies()[0].id) {
+    val movie = getMovieById( movieId = movieId )
+    Scaffold(topBar = {
+        TopAppBar() {
+            Row {
+                Icon(imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Arrow back",
                     modifier = Modifier.clickable {
-                        navController.popBackStack() //go back to last screen
-                })
+                        navController.navigateUp()
+                        //navController.popBackStack()
+                    }
+                )
                 Spacer(modifier = Modifier.width(20.dp))
-                Text(text = movieTitle, fontSize = 20.sp)
-
+                Text(text = movie.title)
             }
-
         }
-
-        }
-    ){
-        content()
+    }) {
+        MainContent(movie = movie, favViewModel = favViewModel)
     }
-
-
 }
 
-@Composable
-fun filterMovie(movieId: String?): Movie {
-    return getMovies().filter { movie -> movie.id == movieId }[0]
-}
+
 

@@ -15,13 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.movieapplication.KotlinClass.FavoritesViewModel
 import com.example.movieapplication.Movie
 import com.example.movieapplication.getMovies
 import com.example.movieapplication.ui.theme.MovieApplicationTheme
 import com.example.movieapplication.widgets.MovieRow
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movieapplication.widgets.FavoriteIcon
 
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()){
+fun HomeScreen(navController: NavController = rememberNavController(), viewModel: FavoritesViewModel){
     // Can also add Welcome Screen.  etc.
 
     var showMenu by remember {
@@ -58,20 +61,30 @@ fun HomeScreen(navController: NavController = rememberNavController()){
                 )
             }
         ) {
-            MainContent(navController = navController)
+            MainContent(getMovies(),navController = navController,favViewModel = viewModel)
         }
     }
 
 }
 
 @Composable
-fun MainContent(movies: List<Movie> = getMovies(), navController: NavController ){
-    LazyColumn(){
-        items(movies){ movie ->
-            MovieRow(movie = movie) { movieId ->
-                    navController.navigate(route = "detailscreen/$movieId")
-
-                //onclick funtion can also be used like this. Last argument automatially an onclicked so it does not need to be specified.
+fun MainContent(movieList : List<Movie>, navController: NavController, favViewModel: FavoritesViewModel) {
+    Surface(
+        color = MaterialTheme.colors.background
+    ) {
+        LazyColumn {
+            items( movieList ) { movie ->
+                MovieRow(
+                    movie = movie,
+                    showFavoriteIcon = true,
+                    content = {
+                        FavoriteIcon(
+                            movie = movie,
+                            isFavorite = favViewModel.isFavorite(movie = movie)
+                        ) { movie ->
+                            if ( ! favViewModel.addMovieToFavorites( movie = movie ) ) favViewModel.removeMovie( movie = movie )
+                        } }
+                ) { movieId -> navController.navigate("detailscreen/$movieId") }
             }
         }
     }

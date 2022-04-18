@@ -1,30 +1,16 @@
 package com.example.movieapplication
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.activity.viewModels
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movieapplication.KotlinClass.FavoritesViewModel
 import com.example.movieapplication.screens.HomeScreen
 import com.example.movieapplication.ui.theme.MovieApplicationTheme
-import java.time.format.TextStyle
 
 data class Movie(
     val id: String,
@@ -38,16 +24,59 @@ data class Movie(
     val rating: String)
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //val favoritesViewModel: FavoritesViewModel by viewModels()
+        //favoritesViewModel.favoriteMovies
+
         super.onCreate(savedInstanceState)
         setContent {
             MyApp{
                 MyNavigation()
+
             }
+
         }
+        Log.d("MainActivity","onCreate called")
+    }
+
+    override  fun onStart(){
+        super.onStart()
+        Log.i("MainActivity", "I am in onStart")
+
+    }
+
+    override  fun onRestart(){
+        super.onRestart()
+        Log.i("MainActivity", "I am in onRestart")
+
+    }
+
+    override  fun onResume(){
+        super.onResume()
+        Log.i("MainActivity", "I am in onResume")
+
+    }
+
+    override  fun onPause(){
+        super.onPause()
+        Log.i("MainActivity", "I am in onPause")
+
+    }
+
+
+    override  fun onStop(){
+        super.onStop()
+        Log.i("MainActivity", "I am in onStop")
+
+    }
+
+    override  fun onDestroy(){
+        super.onDestroy()
+        Log.i("MainActivity", "I am in onDestroy")
     }
 }
-
 
 @Composable
 fun MyApp(content: @Composable () -> Unit){
@@ -55,7 +84,6 @@ fun MyApp(content: @Composable () -> Unit){
         content()
     }
 }
-
 
 @Composable
 fun getMovies(): List<Movie> {
@@ -191,76 +219,23 @@ fun getMovies(): List<Movie> {
 
 }
 
-@Composable
-fun getFavoriteMovies(): List<Movie> {
-    return listOf(
-        Movie(id = "tt0499549",
-            title = "Avatar",
-            year = "2009",
-            genre = "Action, Adventure, Fantasy",
-            director = "James Cameron",
-            actors = "Sam Worthington, Zoe Saldana, Sigourney Weaver, Stephen Lang",
-            plot = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
-            images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BNzM2MDk3MTcyMV5BMl5BanBnXkFtZTcwNjg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMTY2ODQ3NjMyMl5BMl5BanBnXkFtZTcwODg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
-            rating = "7.9"),
+/*@Composable
+fun getFavoriteMovies() {
+    val movies = remember {
+        mutableStateListOf<Movie>()
+    }
 
-
-        Movie(id = "tt0848228",
-            title = "The Avengers",
-            year = "2012",
-            genre = "Action, Sci-Fi, Thriller",
-            director = "Joss Whedon",
-            actors = "Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth",
-            plot = "Earth's mightiest heroes must come together and learn to fight as a team if they are to stop the mischievous Loki and his alien army from enslaving humanity.",
-            images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BMTA0NjY0NzE4OTReQTJeQWpwZ15BbWU3MDczODg2Nzc@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMjE1MzEzMjcyM15BMl5BanBnXkFtZTcwNDM4ODY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMjMwMzM2MTg1M15BMl5BanBnXkFtZTcwNjM4ODY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ4NzM2Mjc5MV5BMl5BanBnXkFtZTcwMTkwOTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMTc3MzQ3NjA5N15BMl5BanBnXkFtZTcwMzY5OTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg"),
-            rating = "8.1"),
-
-        Movie(id = "tt0816692",
-            title = "Interstellar",
-            year = "2014",
-            genre = "Adventure, Drama, Sci-Fi",
-            director = "Christopher Nolan",
-            actors = "Ellen Burstyn, Matthew McConaughey, Mackenzie Foy, John Lithgow",
-            plot = "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-            images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BMjA3NTEwOTMxMV5BMl5BanBnXkFtZTgwMjMyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMzQ5ODE2MzEwM15BMl5BanBnXkFtZTgwMTMyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMTg4Njk4MzY0Nl5BMl5BanBnXkFtZTgwMzIyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMzE3MTM0MTc3Ml5BMl5BanBnXkFtZTgwMDIyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BNjYzNjE2NDk3N15BMl5BanBnXkFtZTgwNzEyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
-            rating = "8.6"),
-
-        Movie(id = "tt0944947",
-            title = "Game of Thrones",
-            year = "2011 - 2018",
-            genre = "Adventure, Drama, Fantasy",
-            director = "N/A",
-            actors = "Peter Dinklage, Lena Headey, Emilia Clarke, Kit Harington",
-            plot = "While a civil war brews between several noble families in Westeros, the children of the former rulers of the land attempt to rise up to power. Meanwhile a forgotten race, bent on destruction, plans to return after thousands of years in the North.",
-            images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BNDc1MGUyNzItNWRkOC00MjM1LWJjNjMtZTZlYWIxMGRmYzVlXkEyXkFqcGdeQXVyMzU3MDEyNjk@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BZjZkN2M5ODgtMjQ2OC00ZjAxLWE1MjMtZDE0OTNmNGM0NWEwXkEyXkFqcGdeQXVyNjUxNzgwNTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BMDk4Y2Y1MDAtNGVmMC00ZTlhLTlmMmQtYjcyN2VkNzUzZjg2XkEyXkFqcGdeQXVyNjUxNzgwNTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BNjZjNWIzMzQtZWZjYy00ZTkwLWJiMTYtOWRkZDBhNWJhY2JmXkEyXkFqcGdeQXVyMjk3NTUyOTc@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
-                "https://images-na.ssl-images-amazon.com/images/M/MV5BNTMyMTRjZWEtM2UxMS00ZjU5LWIxMTYtZDA5YmJhZmRjYTc4XkEyXkFqcGdeQXVyMjk3NTUyOTc@._V1_SX1777_CR0,0,1777,999_AL_.jpg"),
-            rating = "9.5"),
-
-        )
-
-
-}
-
+}*/
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     MovieApplicationTheme {
-        HomeScreen()
     }
 }
+@Composable
+fun getMovieById( movieId : String? ) : Movie {
+    return getMovies().filter { movie -> movie.id == movieId }[0]
+}
+
+
